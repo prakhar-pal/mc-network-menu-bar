@@ -51,44 +51,52 @@ Success means a user can:
 - CoreLocation for the user authorization needed to expose nearby Wi-Fi network names.
 - ServiceManagement (`SMAppService.mainApp`) for Launch at Login.
 - AppKit (`NSWorkspace`) for opening macOS settings and terminating the application.
+- Swift Package Manager for dependency-free CLI compilation and test discovery.
 - XCTest for automated tests.
-- Make as the public developer workflow, wrapping `xcodebuild`.
+- Make as the public developer workflow, wrapping Swift Package Manager, app-bundle assembly, and code signing.
 - No third-party runtime dependencies.
 
 ## Commands
 
-The root Makefile is the supported interface. Exact schemes and paths are encapsulated by these targets.
+The root Makefile is the supported interface. Swift Package Manager and bundle-assembly details are encapsulated by these targets.
 
 ```sh
-make build    # Build the Debug macOS application.
-make test     # Run the complete XCTest suite.
-make clean    # Clean Xcode build products.
-make run      # Build and launch McNetworkMenu locally.
-make release  # Build the Release configuration.
-make check    # Run tests, then produce a clean Release build.
+make build    # Compile with SwiftPM and assemble a Debug .app bundle.
+make test     # Run the complete mock-driven XCTest suite with swift test.
+make clean    # Clean SwiftPM and assembled app outputs.
+make run      # Build and launch the Debug .app bundle.
+make release  # Compile, assemble, and sign an optimized Release .app bundle.
+make check    # Run tests, build Release, and verify its bundle and signature.
 ```
 
 ## Project Structure
 
 ```text
-McNetworkMenu.xcodeproj/              Xcode project
-McNetworkMenu/
-  App/                                App entry point and lifecycle
-  Models/                             Immutable UI-facing network state
-  Services/                           Public-API framework adapters
-  ViewModels/                         Main-actor panel state and actions
-  Views/                              SwiftUI panel components
-  Resources/                          Assets and Info.plist values
-McNetworkMenuTests/
-  Models/                             Pure state and sorting tests
-  ViewModels/                         State-transition tests with fakes
-  Services/                           Adapter-level tests where practical
+Package.swift                         Swift package and Apple-framework linking
+Sources/
+  McNetworkMenu/                      SwiftUI executable target
+    App/                              App entry point and dependency composition
+    Views/                            SwiftUI panel components
+  McNetworkMenuCore/                  Importable, testable library target
+    Models/                           Immutable UI-facing network state
+    Services/                         Public-API framework adapters
+    ViewModels/                       Main-actor panel state and actions
+Tests/
+  McNetworkMenuCoreTests/             Mock-driven XCTest suite
+    Models/                           Pure state and sorting tests
+    ViewModels/                       State-transition tests with fakes
+    Services/                         Adapter-level mapping tests
+    TestSupport/                      Deterministic service fakes
+Support/
+  Info.plist                          Bundle, menu-bar, deployment, and permission metadata
 docs/
   smoke-tests.md                      Hardware-dependent manual checks
   superpowers/specs/                  Approved design specifications
-Makefile                              Build, test, clean, run, and release entry points
+Makefile                              SwiftPM, bundle assembly, signing, and lifecycle entry points
 README.md                             Setup, permissions, signing, and usage
 ```
+
+No `.xcodeproj` is generated or required. SwiftPM builds an executable named `McNetworkMenu`; Make assembles it into the standard `McNetworkMenu.app/Contents/MacOS/` layout, copies `Support/Info.plist`, and signs the finished bundle. Ad-hoc signing is the default, and `SIGNING_IDENTITY` selects a local self-signed certificate when supplied.
 
 ## Architecture
 
@@ -207,7 +215,7 @@ protocol NetworkPathMonitoring: Sendable {
 
 ## Testing Strategy
 
-Automated XCTest coverage verifies outcomes rather than framework call sequences:
+Automated XCTest coverage runs through `swift test` and verifies outcomes using mock/fake framework boundaries rather than live network hardware or framework call sequences:
 
 - Default-route selection and Wi-Fi/Ethernet/offline symbol mapping.
 - Simultaneous Ethernet and Wi-Fi behavior.
@@ -219,7 +227,7 @@ Automated XCTest coverage verifies outcomes rather than framework call sequences
 - Launch-at-login registration states and failures.
 - Passwords are absent from persisted state and diagnostic descriptions.
 
-Hardware and system UI behavior is covered by a repeatable real-Mac smoke checklist:
+Hardware and system UI behavior is documented in a repeatable real-Mac smoke checklist, but execution of this checklist is deferred for the current implementation iteration:
 
 - Wi-Fi scanning and association with open and secured networks.
 - Ethernet becoming and ceasing to be the default route.
@@ -228,7 +236,9 @@ Hardware and system UI behavior is covered by a repeatable real-Mac smoke checkl
 - Network and Privacy Settings links.
 - Launch at Login after logout/login.
 - Menu-bar-only behavior and the visible Quit action.
-- Direct launch of the locally signed Release application outside Xcode.
+- Direct launch of the locally signed Release application outside the build process.
+
+Current completion is based on mock-driven tests, Release compilation, `.app` structure validation, `Info.plist` validation, and code-signature verification. It does not claim that deferred hardware flows have been exercised.
 
 ## Boundaries
 
@@ -236,6 +246,7 @@ Hardware and system UI behavior is covered by a repeatable real-Mac smoke checkl
 
 - Use only Apple public APIs.
 - Run `make check` before declaring a change complete.
+- Keep the project buildable with the installed Swift CLI and Make; do not introduce an Xcode project.
 - Keep passwords out of logs, persistence, errors, and tests.
 - Keep hardware behavior behind protocols and cover domain behavior with fakes.
 - Preserve accessible labels for icon-only controls and status indicators.
@@ -259,7 +270,7 @@ Hardware and system UI behavior is covered by a repeatable real-Mac smoke checkl
 ## Acceptance Criteria
 
 1. `make build`, `make test`, `make clean`, `make run`, `make release`, and `make check` perform the documented actions.
-2. The application builds for macOS 14 or newer with bundle identifier `com.prakharpal.McNetworkMenu`.
+2. The application builds with Swift Package Manager for macOS 14 or newer, requires no `.xcodeproj`, and has bundle identifier `com.prakharpal.McNetworkMenu`.
 3. The app runs exclusively from the menu bar and exposes a visible Quit action.
 4. The label shows Wi-Fi for a Wi-Fi primary route, network nodes for an Ethernet primary route, and a slashed-network symbol when offline.
 5. When both Ethernet and Wi-Fi are connected, the active default route determines the label and primary section.
@@ -268,4 +279,4 @@ Hardware and system UI behavior is covered by a repeatable real-Mac smoke checkl
 8. McNetworkMenu does not persist or log entered Wi-Fi passwords.
 9. Permission and operational failures remain recoverable through inline actions.
 10. Network Settings, Privacy Settings, About, Launch at Login, and Quit work as specified.
-11. Automated tests pass, and the real-Mac smoke checklist documents all hardware-dependent verification.
+11. Mock-driven automated tests pass, the Release `.app` bundle and signature validate, and the real-Mac smoke checklist documents deferred hardware-dependent verification.
