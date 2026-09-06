@@ -93,30 +93,23 @@ struct NetworkMenuModelTests {
         #expect(model.sections.flatMap(\.networks).map(\.ssid) == ["Newest"])
     }
 
-    @Test("Credential failure clears prompt and controls route through dependencies")
-    func actionsAndCredentialClearing() async {
-        let secure = WiFiNetwork(ssid: "New", bssid: "11:22", rssi: -50, isSecure: true)
+    @Test("Wi-Fi controls and system actions route through dependencies")
+    func controlsAndSystemActions() async {
         let wifi = FakeWiFiController()
-        await wifi.setConnectError(DisplayError("Could not join."))
         let login = FakeLaunchAtLoginController()
         let system = FakeSystemActions()
         let model = makeModel(wifi: wifi, location: .init(current: .authorized), login: login, system: system)
 
-        model.select(secure)
-        #expect(model.passwordPrompt?.network == secure)
-        await model.connectPromptedNetwork(password: "secret")
-        #expect(model.passwordPrompt == nil)
-        #expect(model.operation == .failed(DisplayError("Could not join.")))
-
+        model.select(home)
+        #expect(await waitForDisconnection(from: wifi))
         await model.setWiFiEnabled(false)
-        await model.disconnect()
         await model.setLaunchAtLogin(true)
         model.openNetworkSettings()
         model.showAbout()
         model.quit()
 
         let calls = await wifi.calls()
-        #expect(calls.connections == [.init(networkID: secure.id, hadCredential: true)])
+        #expect(calls.connections.isEmpty)
         #expect(calls.powers == [false])
         #expect(calls.disconnects == 1)
         #expect(login.values == [true])
@@ -125,25 +118,36 @@ struct NetworkMenuModelTests {
         #expect(system.quitCount == 1)
     }
 
-    @Test("A secured remembered network joins without a password prompt")
-    func rememberedSecureNetworkJoinsWithoutPasswordPrompt() async {
+    @Test("Non-current Wi-Fi selections open Network Settings")
+    func nonCurrentWiFiSelectionsOpenNetworkSettings() async {
+        let nearby = WiFiNetwork(
+            ssid: "Nearby", bssid: "11:22", rssi: -50,
+            isSecure: true
+        )
         let remembered = WiFiNetwork(
             ssid: "Remembered", bssid: "22:33", rssi: -50,
             isSecure: true, isKnown: true
         )
-        let wifi = FakeWiFiController()
-        let model = makeModel(
-            wifi: wifi,
-            location: .init(current: .authorized)
+        let open = WiFiNetwork(
+            ssid: "Cafe", bssid: "33:44", rssi: -50,
+            isSecure: false
         )
 
-        model.select(remembered)
+        for network in [nearby, remembered, open] {
+            let wifi = FakeWiFiController()
+            let system = FakeSystemActions()
+            let model = makeModel(
+                wifi: wifi,
+                location: .init(current: .authorized),
+                system: system
+            )
 
-        #expect(model.passwordPrompt == nil)
-        #expect(await waitForConnection(from: wifi))
-        #expect((await wifi.calls()).connections == [
-            .init(networkID: remembered.id, hadCredential: false)
-        ])
+            model.select(network)
+
+            #expect(model.passwordPrompt == nil)
+            #expect(system.settingsCount == 1)
+            #expect((await wifi.calls()).connections.isEmpty)
+        }
     }
 
     private func makeModel(
@@ -173,15 +177,11 @@ struct NetworkMenuModelTests {
         return false
     }
 
-    private func waitForConnection(from wifi: FakeWiFiController) async -> Bool {
+    private func waitForDisconnection(from wifi: FakeWiFiController) async -> Bool {
         for _ in 0..<100 {
-            if !(await wifi.calls()).connections.isEmpty { return true }
+            if (await wifi.calls()).disconnects == 1 { return true }
             try? await Task.sleep(nanoseconds: 10_000_000)
         }
         return false
     }
-}
-
-private extension FakeWiFiController {
-    func setConnectError(_ error: DisplayError?) { connectError = error }
 }
