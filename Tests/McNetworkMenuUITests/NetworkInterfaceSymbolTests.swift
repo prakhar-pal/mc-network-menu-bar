@@ -6,9 +6,9 @@ import Testing
 @Suite("Network interface symbols")
 @MainActor
 struct NetworkInterfaceSymbolTests {
-    @Test("Ethernet glyph uses the bright foreground in a dark menu bar")
-    func ethernetGlyphAdaptsToDarkAppearance() throws {
-        let image = try renderedEthernetGlyph(for: .dark)
+    @Test("Ethernet menu-bar image avoids template retinting in dark appearance")
+    func ethernetMenuBarImageUsesAdaptiveNonTemplatePixels() throws {
+        let image = EthernetMenuBarImage.make(for: .dark)
         let data = try #require(image.tiffRepresentation)
         let bitmap = try #require(NSBitmapImageRep(data: data))
 
@@ -20,16 +20,6 @@ struct NetworkInterfaceSymbolTests {
         }.max() ?? 0
 
         #expect(brightestPixel > 0.8)
-    }
-
-    private func renderedEthernetGlyph(for colorScheme: ColorScheme) throws -> NSImage {
-        let renderer = ImageRenderer(content:
-            NetworkInterfaceIcon(primary: .ethernet(name: "en9", ipv4Address: nil))
-                .frame(width: 20, height: 14)
-                .environment(\.colorScheme, colorScheme)
-        )
-        renderer.proposedSize = .init(width: 20, height: 14)
-        renderer.scale = 2
-        return try #require(renderer.nsImage)
+        #expect(image.isTemplate == false)
     }
 }
