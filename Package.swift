@@ -33,7 +33,7 @@ let package = Package(
         ),
         .testTarget(
             name: "McNetworkMenuUITests",
-            dependencies: ["McNetworkMenuCore"]
+            dependencies: ["McNetworkMenu"]
         )
     ]
 )

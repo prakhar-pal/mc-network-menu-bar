@@ -21,7 +21,7 @@ struct McNetworkMenuApp: App {
         } label: {
             NetworkInterfaceIcon(primary: model.primaryInterface)
                 .font(.system(size: 15, weight: .medium))
-                .frame(width: 18, height: 16)
+                .frame(width: 20, height: 16)
                 .accessibilityLabel(model.primaryInterface.accessibilityLabel)
         }
         .menuBarExtraStyle(.window)
