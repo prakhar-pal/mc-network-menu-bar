@@ -15,8 +15,9 @@ struct FooterView: View {
                 Label("Launch at Login", systemImage: "power")
             }
             .toggleStyle(.switch)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 4)
+            .padding(.vertical, 5)
 
             if model.launchAtLoginStatus == .requiresApproval {
                 Text("Approval is required in Login Items settings.")

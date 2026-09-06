@@ -52,7 +52,7 @@ struct PrimaryInterfaceResolverTests {
         let ethernet = PrimaryInterface.ethernet(name: "en7", ipv4Address: nil)
 
         #expect(wifi.symbolName == "wifi")
-        #expect(ethernet.symbolName == "network")
+        #expect(ethernet.symbolName == "point.3.connected.trianglepath.dotted")
         #expect(PrimaryInterface.offline.symbolName == "network.slash")
         #expect(wifi.accessibilityLabel == "Wi-Fi is the primary network")
         #expect(ethernet.accessibilityLabel == "Ethernet is the primary network")

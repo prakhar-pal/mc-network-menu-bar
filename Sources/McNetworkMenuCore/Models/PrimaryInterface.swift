@@ -8,7 +8,7 @@ public enum PrimaryInterface: Equatable, Sendable {
         case .wifi:
             return "wifi"
         case .ethernet:
-            return "network"
+            return "point.3.connected.trianglepath.dotted"
         case .offline:
             return "network.slash"
         }
