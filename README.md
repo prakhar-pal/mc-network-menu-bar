@@ -4,6 +4,12 @@ McNetworkMenu is a native SwiftUI menu-bar utility for macOS. Its icon follows t
 
 The panel keeps the active interface first while leaving Wi-Fi controls immediately available. It can show nearby and remembered networks, join or disconnect Wi-Fi, toggle Wi-Fi power, open System Settings, manage Launch at Login, show About, and quit. Remembered networks and their credentials remain managed by macOS.
 
+## Preview
+
+![McNetworkMenu showing Ethernet as the primary route with Wi-Fi controls and application actions](docs/assets/network-menu-preview.svg)
+
+_Ethernet is shown as the active default route while Wi-Fi remains available for quick switching._
+
 ## Requirements
 
 - macOS 14 Sonoma or newer
