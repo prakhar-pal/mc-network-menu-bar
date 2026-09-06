@@ -14,7 +14,8 @@ public protocol WiFiControlling: Sendable {
     func disconnect() async throws
 }
 
-public protocol LocationAuthorizing: Sendable {
+@MainActor
+public protocol LocationAuthorizing: AnyObject {
     func currentStatus() async -> LocationPermissionState
     func requestAuthorization() async -> LocationPermissionState
 }
@@ -26,7 +27,8 @@ public enum LaunchAtLoginStatus: Equatable, Sendable {
     case notFound
 }
 
-public protocol LaunchAtLoginControlling: Sendable {
+@MainActor
+public protocol LaunchAtLoginControlling: AnyObject {
     func status() async -> LaunchAtLoginStatus
     func setEnabled(_ enabled: Bool) async throws -> LaunchAtLoginStatus
 }
