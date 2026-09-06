@@ -51,7 +51,7 @@ McNetworkMenu is an agent app (`LSUIElement`) and does not show a Dock icon. Use
 
 ## Privacy and platform behavior
 
-McNetworkMenu requests Location access only when a named nearby-network scan is first needed. macOS gates visible Wi-Fi names behind this permission. Password text stays in the SwiftUI secure field, is passed directly to CoreWLAN for the attempted association, and is then cleared; it is never logged or persisted by McNetworkMenu.
+McNetworkMenu requests Location access only when a named nearby-network scan is first needed. macOS gates visible Wi-Fi names behind this permission. For new secured networks, password text stays in the SwiftUI secure field, is passed directly to CoreWLAN for the attempted association, and is then cleared. For known secured networks, the app reads the existing macOS Keychain password only for that association. Neither path logs or persists credentials in McNetworkMenu.
 
 The app uses public Apple APIs only: Network, CoreWLAN, CoreLocation, ServiceManagement, AppKit, and SwiftUI. It does not reorder network services, change the default route, edit remembered-network profiles, bypass administrator approval, or use private System Settings pane URLs. The Settings action opens the System Settings application.
 

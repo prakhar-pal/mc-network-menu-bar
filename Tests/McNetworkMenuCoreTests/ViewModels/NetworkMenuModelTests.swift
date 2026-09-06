@@ -125,20 +125,25 @@ struct NetworkMenuModelTests {
         #expect(system.quitCount == 1)
     }
 
-    @Test("A secured remembered network requests its password before association")
-    func rememberedSecureNetworkRequestsPassword() async {
+    @Test("A secured remembered network joins without a password prompt")
+    func rememberedSecureNetworkJoinsWithoutPasswordPrompt() async {
         let remembered = WiFiNetwork(
             ssid: "Remembered", bssid: "22:33", rssi: -50,
             isSecure: true, isKnown: true
         )
+        let wifi = FakeWiFiController()
         let model = makeModel(
-            wifi: FakeWiFiController(),
+            wifi: wifi,
             location: .init(current: .authorized)
         )
 
         model.select(remembered)
 
-        #expect(model.passwordPrompt?.network == remembered)
+        #expect(model.passwordPrompt == nil)
+        #expect(await waitForConnection(from: wifi))
+        #expect((await wifi.calls()).connections == [
+            .init(networkID: remembered.id, hadCredential: false)
+        ])
     }
 
     private func makeModel(
@@ -164,6 +169,14 @@ struct NetworkMenuModelTests {
         for _ in 0..<100 {
             if model.primaryInterface == expected { return true }
             try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        return false
+    }
+
+    private func waitForConnection(from wifi: FakeWiFiController) async -> Bool {
+        for _ in 0..<100 {
+            if !(await wifi.calls()).connections.isEmpty { return true }
+            try? await Task.sleep(nanoseconds: 10_000_000)
         }
         return false
     }
