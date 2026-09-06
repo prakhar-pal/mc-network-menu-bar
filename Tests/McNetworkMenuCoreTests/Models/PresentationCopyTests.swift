@@ -10,11 +10,7 @@ struct PresentationCopyTests {
             .ethernet(name: "en7", ipv4Address: nil),
             .offline
         ]
-        #expect(states.map(\.iconKind) == [
-            .system("wifi"),
-            .lanTree,
-            .system("network.slash")
-        ])
+        #expect(states.map(\.symbolName) == ["wifi", "bonjour", "network.slash"])
         #expect(Set(states.map(\.accessibilityLabel)).count == 3)
         #expect(states.allSatisfy { !$0.accessibilityLabel.isEmpty })
     }

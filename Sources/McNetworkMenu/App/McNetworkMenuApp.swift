@@ -19,10 +19,7 @@ struct McNetworkMenuApp: App {
         MenuBarExtra {
             MenuPanelView(model: model)
         } label: {
-            NetworkInterfaceIcon(
-                primary: model.primaryInterface,
-                usesIntrinsicLANImage: true
-            )
+            NetworkInterfaceIcon(primary: model.primaryInterface)
                 .font(.system(size: 15, weight: .medium))
                 .frame(width: 18, height: 16)
                 .accessibilityLabel(model.primaryInterface.accessibilityLabel)

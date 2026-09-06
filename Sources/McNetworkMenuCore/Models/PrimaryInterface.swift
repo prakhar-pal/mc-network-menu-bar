@@ -1,21 +1,16 @@
-public enum PrimaryInterfaceIconKind: Equatable, Sendable {
-    case system(String)
-    case lanTree
-}
-
 public enum PrimaryInterface: Equatable, Sendable {
     case wifi(interfaceName: String, ssid: String?, ipv4Address: String?)
     case ethernet(name: String, ipv4Address: String?)
     case offline
 
-    public var iconKind: PrimaryInterfaceIconKind {
+    public var symbolName: String {
         switch self {
         case .wifi:
-            return .system("wifi")
+            return "wifi"
         case .ethernet:
-            return .lanTree
+            return "bonjour"
         case .offline:
-            return .system("network.slash")
+            return "network.slash"
         }
     }
 
