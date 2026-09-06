@@ -43,6 +43,8 @@ public enum WiFiSectionKind: String, CaseIterable, Equatable, Sendable {
     case connected = "Connected"
     case known = "Known Networks"
     case nearby = "Other Networks"
+
+    public var title: String { rawValue }
 }
 
 public struct WiFiNetworkSection: Identifiable, Equatable, Sendable {

@@ -13,6 +13,21 @@ public enum NetworkOperationState: Equatable, Sendable {
     case disconnecting
     case changingPower
     case failed(DisplayError)
+
+    public var displayMessage: String? {
+        guard case let .failed(error) = self else { return nil }
+        return error.message
+    }
+
+    public var progressLabel: String? {
+        switch self {
+        case .scanning: return "Looking for networks…"
+        case .connecting: return "Joining network…"
+        case .disconnecting: return "Disconnecting…"
+        case .changingPower: return "Changing Wi-Fi power…"
+        case .idle, .failed: return nil
+        }
+    }
 }
 
 public enum LocationPermissionState: Equatable, Sendable {
