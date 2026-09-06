@@ -41,6 +41,7 @@ public final class NetworkMenuModel: ObservableObject {
         self.location = location
         self.launchAtLogin = launchAtLogin
         self.systemActions = systemActions
+        start()
     }
 
     public func start() {

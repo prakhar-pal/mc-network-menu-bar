@@ -20,7 +20,6 @@ struct MenuPanelView: View {
         .frame(width: 360)
         .frame(maxHeight: 620)
         .onAppear {
-            model.start()
             Task { await model.panelOpened() }
         }
         .sheet(item: passwordPromptBinding) { prompt in

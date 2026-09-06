@@ -8,7 +8,7 @@ public enum PrimaryInterface: Equatable, Sendable {
         case .wifi:
             return "wifi"
         case .ethernet:
-            return "bonjour"
+            return "ellipsis.curlybraces"
         case .offline:
             return "network.slash"
         }

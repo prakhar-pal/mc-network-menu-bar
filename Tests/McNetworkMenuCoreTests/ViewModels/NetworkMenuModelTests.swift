@@ -9,6 +9,28 @@ struct NetworkMenuModelTests {
         isSecure: true, isKnown: true, isConnected: true
     )
 
+    @Test("Route monitoring starts before the panel opens")
+    func monitoringStartsOnCreation() async throws {
+        let path = FakePathMonitor()
+        let model = makeModel(
+            path: path,
+            wifi: FakeWiFiController(),
+            location: FakeLocationAuthorizer(current: .authorized)
+        )
+
+        path.send(.init(
+            isSatisfied: true,
+            interfaces: [.init(name: "en9", kind: .ethernet, ipv4Address: "192.168.29.190")]
+        ))
+        try await settle()
+
+        #expect(path.startCount == 1)
+        #expect(model.primaryInterface == .ethernet(
+            name: "en9",
+            ipv4Address: "192.168.29.190"
+        ))
+    }
+
     @Test("Wi-Fi route gains connected SSID and Ethernet keeps Wi-Fi data")
     func routeMergingAndRetention() async throws {
         let path = FakePathMonitor()
