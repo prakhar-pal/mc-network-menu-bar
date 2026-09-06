@@ -1,8 +1,10 @@
+import AppKit
 import SwiftUI
 import McNetworkMenuCore
 
 struct NetworkInterfaceIcon: View {
     let primary: PrimaryInterface
+    var usesIntrinsicLANImage = false
 
     @ViewBuilder
     var body: some View {
@@ -10,10 +12,37 @@ struct NetworkInterfaceIcon: View {
         case let .system(name):
             Image(systemName: name)
         case .lanTree:
-            LANTreeIcon()
-                .padding(1)
+            if usesIntrinsicLANImage {
+                Image(nsImage: LANMenuBarImage.make())
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                LANTreeIcon()
+                    .padding(1)
+            }
         }
     }
+}
+
+@MainActor
+enum LANMenuBarImage {
+    private static let cachedImage: NSImage = {
+        let size = CGSize(width: 18, height: 16)
+        let renderer = ImageRenderer(content:
+            LANTreeIcon()
+                .foregroundStyle(Color.black)
+                .frame(width: size.width, height: size.height)
+        )
+        renderer.proposedSize = ProposedViewSize(size)
+        renderer.scale = 2
+
+        let image = renderer.nsImage ?? NSImage(size: size)
+        image.size = size
+        image.isTemplate = true
+        return image
+    }()
+
+    static func make() -> NSImage { cachedImage }
 }
 
 private struct LANTreeIcon: View {
