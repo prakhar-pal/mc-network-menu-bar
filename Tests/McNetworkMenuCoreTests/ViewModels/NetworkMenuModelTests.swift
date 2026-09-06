@@ -125,6 +125,22 @@ struct NetworkMenuModelTests {
         #expect(system.quitCount == 1)
     }
 
+    @Test("A secured remembered network requests its password before association")
+    func rememberedSecureNetworkRequestsPassword() async {
+        let remembered = WiFiNetwork(
+            ssid: "Remembered", bssid: "22:33", rssi: -50,
+            isSecure: true, isKnown: true
+        )
+        let model = makeModel(
+            wifi: FakeWiFiController(),
+            location: .init(current: .authorized)
+        )
+
+        model.select(remembered)
+
+        #expect(model.passwordPrompt?.network == remembered)
+    }
+
     private func makeModel(
         path: FakePathMonitor = .init(),
         wifi: FakeWiFiController,

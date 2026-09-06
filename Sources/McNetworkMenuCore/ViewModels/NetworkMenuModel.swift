@@ -106,7 +106,7 @@ public final class NetworkMenuModel: ObservableObject {
     public func select(_ network: WiFiNetwork) {
         if network.isConnected {
             Task { await disconnect() }
-        } else if network.isSecure && !network.isKnown {
+        } else if network.isSecure {
             passwordPrompt = WiFiPasswordPrompt(network: network)
         } else {
             Task { await connect(network, password: nil) }
