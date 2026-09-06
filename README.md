@@ -1,0 +1,52 @@
+# McNetworkMenu
+
+McNetworkMenu is a native SwiftUI menu-bar utility for macOS. Its icon follows the interface carrying the default route: Wi-Fi uses `wifi`, Ethernet uses the network-nodes `network` symbol, and offline uses `network.slash`.
+
+The panel keeps the active interface first while leaving Wi-Fi controls immediately available. It can show nearby and remembered networks, join or disconnect Wi-Fi, toggle Wi-Fi power, open System Settings, manage Launch at Login, show About, and quit. Remembered networks and their credentials remain managed by macOS.
+
+## Requirements
+
+- macOS 14 Sonoma or newer
+- Swift 5.9 or newer from Apple Command Line Tools
+- GNU-compatible `make` (the macOS-provided Make works)
+- No Xcode project and no Xcode GUI
+
+The checked-in Makefile currently defaults to the Command Line Tools macOS 15.4 SDK because the local Swift compiler and newer installed SDK have incompatible patch versions. Override `SDKROOT` when your toolchain uses another compatible SDK.
+
+## Build and test
+
+```sh
+make build       # Debug bundle
+make test        # Hardware-free unit tests using mock data
+make release     # Release bundle
+make check       # Tests followed by verified Release bundle
+make run         # Build and launch the Debug app
+make clean       # Remove generated .build output
+```
+
+Generated bundles are written to:
+
+- `.build/apps/debug/McNetworkMenu.app`
+- `.build/apps/release/McNetworkMenu.app`
+
+The build uses ad-hoc signing by default. To use a certificate already installed in your keychain:
+
+```sh
+make release SIGNING_IDENTITY="Your Certificate Common Name"
+```
+
+This project is intended for self-publishing on GitHub rather than the Mac App Store. A self-signed or ad-hoc signature is not automatically trusted by other Macs; Gatekeeper behavior is therefore expected to differ from a notarized Developer ID release.
+
+## Install and Launch at Login
+
+Copy `McNetworkMenu.app` to `/Applications` before enabling Launch at Login. Running from a build folder and later moving the app can leave macOS pointing at the old registration location.
+
+McNetworkMenu is an agent app (`LSUIElement`) and does not show a Dock icon. Use **Quit McNetworkMenu** in its panel to stop it.
+
+## Privacy and platform behavior
+
+McNetworkMenu requests Location access only when a named nearby-network scan is first needed. macOS gates visible Wi-Fi names behind this permission. Password text stays in the SwiftUI secure field, is passed directly to CoreWLAN for the attempted association, and is then cleared; it is never logged or persisted by McNetworkMenu.
+
+The app uses public Apple APIs only: Network, CoreWLAN, CoreLocation, ServiceManagement, AppKit, and SwiftUI. It does not reorder network services, change the default route, edit remembered-network profiles, bypass administrator approval, or use private System Settings pane URLs. The Settings action opens the System Settings application.
+
+Automated validation currently uses mock path, Wi-Fi, permission, login-item, and application-action data. Real-hardware checks are intentionally deferred and listed in [docs/smoke-tests.md](docs/smoke-tests.md).

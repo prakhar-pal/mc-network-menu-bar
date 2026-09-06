@@ -30,7 +30,7 @@ test:
 	$(SWIFT) test $(SWIFT_TEST_FLAGS)
 
 clean:
-	$(SWIFT) package $(SWIFT_FLAGS) clean
+	/bin/rm -rf "$(CURDIR)/.build"
 
 run: build
 	open "$(CURDIR)/.build/apps/debug/$(APP_NAME).app"
