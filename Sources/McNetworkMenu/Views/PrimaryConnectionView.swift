@@ -6,7 +6,7 @@ struct PrimaryConnectionView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: primary.symbolName)
+            NetworkInterfaceIcon(primary: primary)
                 .font(.system(size: 24, weight: .medium))
                 .frame(width: 34)
                 .accessibilityHidden(true)

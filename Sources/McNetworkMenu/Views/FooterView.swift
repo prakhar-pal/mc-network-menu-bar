@@ -8,13 +8,18 @@ struct FooterView: View {
         VStack(spacing: 2) {
             footerButton("Network Settings…", symbol: "gear") { model.openNetworkSettings() }
 
-            Toggle(isOn: Binding(
-                get: { model.launchAtLoginStatus == .enabled },
-                set: { value in Task { await model.setLaunchAtLogin(value) } }
-            )) {
-                Label("Launch at Login", systemImage: "power")
+            HStack(spacing: 8) {
+                footerIcon("power")
+                Text("Launch at Login")
+                Spacer()
+                Toggle("Launch at Login", isOn: Binding(
+                    get: { model.launchAtLoginStatus == .enabled },
+                    set: { value in Task { await model.setLaunchAtLogin(value) } }
+                ))
+                .labelsHidden()
+                .toggleStyle(.switch)
+                .accessibilityLabel("Launch at Login")
             }
-            .toggleStyle(.switch)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 4)
             .padding(.vertical, 5)
@@ -35,12 +40,22 @@ struct FooterView: View {
 
     private func footerButton(_ title: String, symbol: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Label(title, systemImage: symbol)
+            HStack(spacing: 8) {
+                footerIcon(symbol)
+                Text(title)
+                Spacer()
+            }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
                 .padding(.horizontal, 4)
                 .padding(.vertical, 5)
         }
         .buttonStyle(.plain)
+    }
+
+    private func footerIcon(_ symbol: String) -> some View {
+        Image(systemName: symbol)
+            .frame(width: 24, alignment: .center)
+            .accessibilityHidden(true)
     }
 }

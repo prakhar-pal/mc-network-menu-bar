@@ -1,6 +1,6 @@
 # McNetworkMenu
 
-McNetworkMenu is a native SwiftUI menu-bar utility for macOS. Its icon follows the interface carrying the default route: Wi-Fi uses `wifi`, Ethernet uses the network-nodes `network` symbol, and offline uses `network.slash`.
+McNetworkMenu is a native SwiftUI menu-bar utility for macOS. Its icon follows the interface carrying the default route: Wi-Fi uses the native `wifi` symbol, Ethernet uses an original SwiftUI-drawn four-node LAN tree, and offline uses `network.slash`.
 
 The panel keeps the active interface first while leaving Wi-Fi controls immediately available. It can show nearby and remembered networks, join or disconnect Wi-Fi, toggle Wi-Fi power, open System Settings, manage Launch at Login, show About, and quit. Remembered networks and their credentials remain managed by macOS.
 
