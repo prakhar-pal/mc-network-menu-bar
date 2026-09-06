@@ -7,20 +7,34 @@ struct NetworkRowView: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 10) {
-                Image(systemName: network.isConnected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(network.isConnected ? Color.accentColor : Color.clear)
-                    .accessibilityHidden(true)
-                Text(network.ssid).lineLimit(1)
-                Spacer()
+            HStack(spacing: 8) {
+                Text(network.ssid)
+                    .lineLimit(1)
+                    .layoutPriority(1)
+
+                if network.isConnected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(Color.accentColor)
+                        .accessibilityHidden(true)
+                }
+
+                Spacer(minLength: 12)
+
                 if network.isSecure {
                     Image(systemName: "lock.fill")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .frame(width: 16)
                         .accessibilityLabel("Secured")
+                } else {
+                    Color.clear
+                        .frame(width: 16, height: 1)
+                    .accessibilityHidden(true)
                 }
+
                 Image(systemName: signalSymbol)
                     .foregroundStyle(.secondary)
+                    .frame(width: 24)
                     .accessibilityLabel("Signal level \(network.signalLevel) of 4")
             }
             .padding(.horizontal, 8)
@@ -28,6 +42,7 @@ struct NetworkRowView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityValue(network.isConnected ? "Connected" : "")
     }
 
     private var signalSymbol: String {

@@ -1,25 +1,25 @@
 import AppKit
+import SwiftUI
 import Testing
 @testable import McNetworkMenu
 
 @Suite("Network interface symbols")
 @MainActor
 struct NetworkInterfaceSymbolTests {
-    @Test("Ethernet menu-bar image has template pixels at its intended size")
-    func ethernetMenuBarImageIsVisible() throws {
-        let image = EthernetMenuBarImage.make()
-
-        #expect(image.size == NSSize(width: 20, height: 14))
-        #expect(image.isTemplate)
-
+    @Test("Ethernet menu-bar image avoids template retinting in dark appearance")
+    func ethernetMenuBarImageUsesAdaptiveNonTemplatePixels() throws {
+        let image = EthernetMenuBarImage.make(for: .dark)
         let data = try #require(image.tiffRepresentation)
         let bitmap = try #require(NSBitmapImageRep(data: data))
-        var visiblePixelCount = 0
-        for x in 0 ..< bitmap.pixelsWide {
-            for y in 0 ..< bitmap.pixelsHigh where bitmap.colorAt(x: x, y: y)?.alphaComponent ?? 0 > 0.05 {
-                visiblePixelCount += 1
+
+        let brightestPixel = (0 ..< bitmap.pixelsWide).flatMap { x in
+            (0 ..< bitmap.pixelsHigh).compactMap { y -> CGFloat? in
+                guard let color = bitmap.colorAt(x: x, y: y), color.alphaComponent > 0.05 else { return nil }
+                return max(color.redComponent, color.greenComponent, color.blueComponent)
             }
-        }
-        #expect(visiblePixelCount > 20)
+        }.max() ?? 0
+
+        #expect(brightestPixel > 0.8)
+        #expect(image.isTemplate == false)
     }
 }

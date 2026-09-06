@@ -4,6 +4,7 @@ import McNetworkMenuCore
 
 struct NetworkInterfaceIcon: View {
     let primary: PrimaryInterface
+    @Environment(\.colorScheme) private var colorScheme
 
     @ViewBuilder
     var body: some View {
@@ -11,7 +12,7 @@ struct NetworkInterfaceIcon: View {
         case let .system(name):
             Image(systemName: name)
         case .ethernet:
-            Image(nsImage: EthernetMenuBarImage.make())
+            Image(nsImage: EthernetMenuBarImage.make(for: colorScheme))
                 .resizable()
                 .scaledToFit()
         }
@@ -20,11 +21,18 @@ struct NetworkInterfaceIcon: View {
 
 @MainActor
 enum EthernetMenuBarImage {
-    private static let cachedImage: NSImage = {
-        let size = CGSize(width: 20, height: 14)
+    private static let size = CGSize(width: 20, height: 14)
+    private static let darkImage = render(foreground: .white)
+    private static let lightImage = render(foreground: .black)
+
+    static func make(for colorScheme: ColorScheme) -> NSImage {
+        colorScheme == .dark ? darkImage : lightImage
+    }
+
+    private static func render(foreground: Color) -> NSImage {
         let renderer = ImageRenderer(content:
             EthernetGlyph()
-                .foregroundStyle(Color.black)
+                .foregroundStyle(foreground)
                 .frame(width: size.width, height: size.height)
         )
         renderer.proposedSize = ProposedViewSize(size)
@@ -32,11 +40,9 @@ enum EthernetMenuBarImage {
 
         let image = renderer.nsImage ?? NSImage(size: size)
         image.size = size
-        image.isTemplate = true
+        image.isTemplate = false
         return image
-    }()
-
-    static func make() -> NSImage { cachedImage }
+    }
 }
 
 private struct EthernetGlyph: View {

@@ -1,3 +1,4 @@
+import CoreWLAN
 import Testing
 @testable import McNetworkMenuCore
 
@@ -38,5 +39,62 @@ struct CoreWLANMappingTests {
             knownSSIDs: [], connectedSSID: nil
         ))
         #expect(!open.isSecure)
+    }
+
+    @Test("A known secured network resolves its saved passphrase")
+    func knownSecuredNetworkResolvesSavedPassphrase() {
+        var lookupCount = 0
+
+        let resolution = CoreWLANPassphrase.resolve(
+            entered: nil,
+            isSecure: true,
+            isKnown: true,
+            savedPassword: {
+                lookupCount += 1
+                return "saved-password"
+            }
+        )
+
+        #expect(resolution == .passphrase("saved-password"))
+        #expect(lookupCount == 1)
+    }
+
+    @Test("Wi-Fi Keychain lookup falls back from user to system credentials")
+    func keychainLookupFallsBackToSystemCredentials() {
+        var domains: [CWKeychainDomain] = []
+
+        let password = CoreWLANKeychain.password(for: "Home") { domain, _ in
+            domains.append(domain)
+            return domain == .system ? "system-password" : nil
+        }
+
+        #expect(password == "system-password")
+        #expect(domains == [.user, .system])
+    }
+
+    @Test("Open and manually entered associations do not read saved passphrases")
+    func openAndManuallyEnteredNetworksSkipSavedPassphraseLookup() {
+        var lookupCount = 0
+        let lookup = {
+            lookupCount += 1
+            return "saved-password"
+        }
+
+        let open = CoreWLANPassphrase.resolve(
+            entered: nil,
+            isSecure: false,
+            isKnown: true,
+            savedPassword: lookup
+        )
+        let entered = CoreWLANPassphrase.resolve(
+            entered: "typed-password",
+            isSecure: true,
+            isKnown: true,
+            savedPassword: lookup
+        )
+
+        #expect(open == .passphrase(nil))
+        #expect(entered == .passphrase("typed-password"))
+        #expect(lookupCount == 0)
     }
 }

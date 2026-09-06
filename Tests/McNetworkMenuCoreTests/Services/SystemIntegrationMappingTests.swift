@@ -22,4 +22,10 @@ struct SystemIntegrationMappingTests {
         #expect(LaunchAtLoginStatusMapper.map(.notRegistered) == .disabled)
         #expect(LaunchAtLoginStatusMapper.map(.notFound) == .notFound)
     }
+
+    @Test("Network Settings uses the Sonoma network destination")
+    func networkSettingsURL() {
+        #expect(SystemSettingsURL.url(for: .network).absoluteString
+            == "x-apple.systempreferences:com.apple.Network-Settings.extension")
+    }
 }

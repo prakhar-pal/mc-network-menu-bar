@@ -37,6 +37,28 @@ struct WiFiNetworkPresentationTests {
         #expect(sections[0].networks.map(\.isSecure) == [true, false, true])
     }
 
+    @Test("Flat menu list keeps connected, known, and nearby priority without headings")
+    func flatMenuListOrdering() {
+        let sections = [
+            WiFiNetworkSection(
+                kind: .nearby,
+                networks: [WiFiNetwork(ssid: "Cafe", bssid: nil, rssi: -30, isSecure: false)]
+            ),
+            WiFiNetworkSection(
+                kind: .known,
+                networks: [WiFiNetwork(ssid: "Office", bssid: nil, rssi: -40, isSecure: true, isKnown: true)]
+            ),
+            WiFiNetworkSection(
+                kind: .connected,
+                networks: [WiFiNetwork(ssid: "Home", bssid: nil, rssi: -60, isSecure: true, isConnected: true)]
+            )
+        ]
+
+        let networks = WiFiNetworkPresentation.flattenedNetworks(from: sections)
+
+        #expect(networks.map(\.ssid) == ["Home", "Office", "Cafe"])
+    }
+
     @Test("Signal levels use stable RSSI thresholds", arguments: [
         (-45, 4), (-60, 3), (-72, 2), (-90, 1)
     ])

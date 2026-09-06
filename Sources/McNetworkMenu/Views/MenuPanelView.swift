@@ -80,11 +80,7 @@ struct MenuPanelView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(model.sections) { section in
-                            WiFiSectionView(section: section, onSelect: model.select)
-                        }
-                    }
+                    WiFiNetworkListView(sections: model.sections, onSelect: model.select)
                 }
                 .frame(maxHeight: 310)
             }

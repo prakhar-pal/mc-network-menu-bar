@@ -1,5 +1,6 @@
 import CoreWLAN
 import Foundation
+import Security
 
 public struct CoreWLANNetworkRecord: Equatable, Sendable {
     public let ssid: String?
@@ -37,10 +38,59 @@ public enum CoreWLANNetworkMapper {
     }
 }
 
+enum CoreWLANPassphrase: Equatable {
+    case passphrase(String?)
+    case unavailableSavedPassword
+
+    static func resolve(
+        entered: String?,
+        isSecure: Bool,
+        isKnown: Bool,
+        savedPassword: () -> String?
+    ) -> CoreWLANPassphrase {
+        if let entered { return .passphrase(entered) }
+        guard isSecure, isKnown else { return .passphrase(nil) }
+        guard let savedPassword = savedPassword(), !savedPassword.isEmpty else {
+            return .unavailableSavedPassword
+        }
+        return .passphrase(savedPassword)
+    }
+}
+
+enum CoreWLANKeychain {
+    static func password(for ssid: String) -> String? {
+        password(for: ssid) { domain, ssidData in
+            findPassword(in: domain, for: ssidData)
+        }
+    }
+
+    static func password(
+        for ssid: String,
+        find: (CWKeychainDomain, Data) -> String?
+    ) -> String? {
+        guard let ssidData = ssid.data(using: .utf8) else { return nil }
+        return find(.user, ssidData) ?? find(.system, ssidData)
+    }
+
+    private static func findPassword(in domain: CWKeychainDomain, for ssidData: Data) -> String? {
+        var password: NSString?
+        let status = CWKeychainFindWiFiPassword(domain, ssidData, &password)
+        guard status == errSecSuccess else { return nil }
+        return password as String?
+    }
+}
+
 public actor CoreWLANController: WiFiControlling {
+    private struct CachedNetwork {
+        let network: CWNetwork
+        let ssid: String
+        let isSecure: Bool
+        let isKnown: Bool
+    }
+
     private let client: CWWiFiClient
     private let interface: CWInterface?
-    private var scanCache: [String: CWNetwork] = [:]
+    private var scanCache: [String: CachedNetwork] = [:]
 
     public init(client: CWWiFiClient = .shared()) {
         self.client = client
@@ -63,7 +113,7 @@ public actor CoreWLANController: WiFiControlling {
             let profileObjects = interface.configuration()?.networkProfiles.array ?? []
             let knownSSIDs = Set(profileObjects.compactMap { ($0 as? CWNetworkProfile)?.ssid })
             let connectedSSID = interface.ssid()
-            var cache: [String: CWNetwork] = [:]
+            var cache: [String: CachedNetwork] = [:]
 
             let mapped = scanned.compactMap { network -> WiFiNetwork? in
                 let record = CoreWLANNetworkRecord(
@@ -77,7 +127,12 @@ public actor CoreWLANController: WiFiControlling {
                     knownSSIDs: knownSSIDs,
                     connectedSSID: connectedSSID
                 ) else { return nil }
-                cache[value.id] = network
+                cache[value.id] = CachedNetwork(
+                    network: network,
+                    ssid: value.ssid,
+                    isSecure: value.isSecure,
+                    isKnown: value.isKnown
+                )
                 return value
             }
             scanCache = cache
@@ -98,13 +153,22 @@ public actor CoreWLANController: WiFiControlling {
 
     public func connect(to networkID: String, password: String?) async throws {
         guard let interface else { throw DisplayError("No Wi-Fi interface is available.") }
-        guard let network = scanCache[networkID] else {
+        guard let cachedNetwork = scanCache[networkID] else {
             throw DisplayError("Refresh networks and try again.")
         }
         do {
-            try interface.associate(to: network, password: password)
+            let resolution = CoreWLANPassphrase.resolve(
+                entered: password,
+                isSecure: cachedNetwork.isSecure,
+                isKnown: cachedNetwork.isKnown,
+                savedPassword: { CoreWLANKeychain.password(for: cachedNetwork.ssid) }
+            )
+            guard case let .passphrase(passphrase) = resolution else {
+                throw DisplayError("Saved Wi-Fi password is unavailable. Open Network Settings to reconnect.")
+            }
+            try interface.associate(to: cachedNetwork.network, password: passphrase)
         } catch {
-            throw DisplayError("Could not join the Wi-Fi network.")
+            throw (error as? DisplayError) ?? DisplayError("Could not join the Wi-Fi network.")
         }
     }
 

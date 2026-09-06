@@ -14,6 +14,7 @@ let package = Package(
             linkerSettings: [
                 .linkedFramework("Network"),
                 .linkedFramework("CoreWLAN"),
+                .linkedFramework("Security"),
                 .linkedFramework("CoreLocation"),
                 .linkedFramework("ServiceManagement"),
                 .linkedFramework("AppKit")
