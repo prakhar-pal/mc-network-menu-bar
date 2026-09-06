@@ -57,11 +57,24 @@ enum CoreWLANPassphrase: Equatable {
     }
 }
 
-private enum CoreWLANKeychain {
+enum CoreWLANKeychain {
     static func password(for ssid: String) -> String? {
+        password(for: ssid) { domain, ssidData in
+            findPassword(in: domain, for: ssidData)
+        }
+    }
+
+    static func password(
+        for ssid: String,
+        find: (CWKeychainDomain, Data) -> String?
+    ) -> String? {
         guard let ssidData = ssid.data(using: .utf8) else { return nil }
+        return find(.user, ssidData) ?? find(.system, ssidData)
+    }
+
+    private static func findPassword(in domain: CWKeychainDomain, for ssidData: Data) -> String? {
         var password: NSString?
-        let status = CWKeychainFindWiFiPassword(.user, ssidData, &password)
+        let status = CWKeychainFindWiFiPassword(domain, ssidData, &password)
         guard status == errSecSuccess else { return nil }
         return password as String?
     }

@@ -1,3 +1,4 @@
+import CoreWLAN
 import Testing
 @testable import McNetworkMenuCore
 
@@ -56,6 +57,19 @@ struct CoreWLANMappingTests {
 
         #expect(resolution == .passphrase("saved-password"))
         #expect(lookupCount == 1)
+    }
+
+    @Test("Wi-Fi Keychain lookup falls back from user to system credentials")
+    func keychainLookupFallsBackToSystemCredentials() {
+        var domains: [CWKeychainDomain] = []
+
+        let password = CoreWLANKeychain.password(for: "Home") { domain, _ in
+            domains.append(domain)
+            return domain == .system ? "system-password" : nil
+        }
+
+        #expect(password == "system-password")
+        #expect(domains == [.user, .system])
     }
 
     @Test("Open and manually entered associations do not read saved passphrases")
