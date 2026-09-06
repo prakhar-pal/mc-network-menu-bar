@@ -60,6 +60,14 @@ public struct WiFiNetworkSection: Identifiable, Equatable, Sendable {
 }
 
 public enum WiFiNetworkPresentation {
+    public static func flattenedNetworks(from sections: [WiFiNetworkSection]) -> [WiFiNetwork] {
+        WiFiSectionKind.allCases.flatMap { kind in
+            sections
+                .filter { $0.kind == kind }
+                .flatMap(\.networks)
+        }
+    }
+
     public static func sections(from networks: [WiFiNetwork]) -> [WiFiNetworkSection] {
         let visible = networks.filter { !$0.ssid.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         var deduplicated: [String: WiFiNetwork] = [:]

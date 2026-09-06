@@ -22,9 +22,13 @@ struct NetworkMenuModelTests {
             isSatisfied: true,
             interfaces: [.init(name: "en9", kind: .ethernet, ipv4Address: "192.168.29.190")]
         ))
-        try await settle()
+        let receivedRoute = try await waitForPrimaryInterface(
+            model,
+            .ethernet(name: "en9", ipv4Address: "192.168.29.190")
+        )
 
         #expect(path.startCount == 1)
+        #expect(receivedRoute)
         #expect(model.primaryInterface == .ethernet(
             name: "en9",
             ipv4Address: "192.168.29.190"
@@ -48,7 +52,11 @@ struct NetworkMenuModelTests {
         #expect(model.sections.first?.networks == [home])
 
         path.send(.init(isSatisfied: true, interfaces: [.init(name: "en7", kind: .ethernet, ipv4Address: "192.168.1.24")]))
-        try await settle()
+        let receivedRoute = try await waitForPrimaryInterface(
+            model,
+            .ethernet(name: "en7", ipv4Address: "192.168.1.24")
+        )
+        #expect(receivedRoute)
         #expect(model.primaryInterface == .ethernet(name: "en7", ipv4Address: "192.168.1.24"))
         #expect(model.sections.first?.networks == [home])
     }
@@ -133,8 +141,15 @@ struct NetworkMenuModelTests {
         )
     }
 
-    private func settle() async throws {
-        try await Task.sleep(nanoseconds: 10_000_000)
+    private func waitForPrimaryInterface(
+        _ model: NetworkMenuModel,
+        _ expected: PrimaryInterface
+    ) async throws -> Bool {
+        for _ in 0..<100 {
+            if model.primaryInterface == expected { return true }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        return false
     }
 }
 

@@ -1,4 +1,3 @@
-import AppKit
 import SwiftUI
 import McNetworkMenuCore
 
@@ -11,32 +10,10 @@ struct NetworkInterfaceIcon: View {
         case let .system(name):
             Image(systemName: name)
         case .ethernet:
-            Image(nsImage: EthernetMenuBarImage.make())
-                .resizable()
-                .scaledToFit()
+            EthernetGlyph()
+                .foregroundStyle(.primary)
         }
     }
-}
-
-@MainActor
-enum EthernetMenuBarImage {
-    private static let cachedImage: NSImage = {
-        let size = CGSize(width: 20, height: 14)
-        let renderer = ImageRenderer(content:
-            EthernetGlyph()
-                .foregroundStyle(Color.black)
-                .frame(width: size.width, height: size.height)
-        )
-        renderer.proposedSize = ProposedViewSize(size)
-        renderer.scale = 2
-
-        let image = renderer.nsImage ?? NSImage(size: size)
-        image.size = size
-        image.isTemplate = true
-        return image
-    }()
-
-    static func make() -> NSImage { cachedImage }
 }
 
 private struct EthernetGlyph: View {

@@ -19,11 +19,6 @@ struct PresentationCopyTests {
         #expect(states.allSatisfy { !$0.accessibilityLabel.isEmpty })
     }
 
-    @Test("Wi-Fi sections use compact native titles")
-    func sectionTitles() {
-        #expect(WiFiSectionKind.allCases.map(\.title) == ["Connected", "Known Networks", "Other Networks"])
-    }
-
     @Test("Only sanitized display errors reach operation copy")
     func operationCopy() {
         let error = DisplayError("Could not join the Wi-Fi network.")

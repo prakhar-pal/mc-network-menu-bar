@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" role="img" aria-labelledby="title description">
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" role="img" aria-labelledby="title description">
   <title id="title">McNetworkMenu preview</title>
-  <desc id="description">A macOS menu bar and McNetworkMenu panel showing Ethernet as the primary route, Wi-Fi networks, and application actions.</desc>
+  <desc id="description">A macOS menu bar and McNetworkMenu panel showing Ethernet as the primary route, a flat Wi-Fi network list, and application actions.</desc>
 
-  <rect width="960" height="720" fill="#111113"/>
+  <rect width="960" height="620" fill="#111113"/>
   <rect width="960" height="48" fill="#1a1719"/>
   <line x1="0" y1="47.5" x2="960" y2="47.5" stroke="#49464a"/>
 
@@ -23,7 +23,7 @@
   <text x="815" y="31" fill="#f2f2f4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="20">Sun 6 Sep</text>
 
   <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-    <rect x="220" y="62" width="520" height="630" rx="13" fill="#242426" stroke="#5b595d" stroke-width="2"/>
+    <rect x="220" y="62" width="520" height="530" rx="13" fill="#242426" stroke="#5b595d" stroke-width="2"/>
 
     <g transform="translate(254 93)" fill="none" stroke="#f1f1f3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
       <path d="M10 3L2 15l8 12M38 3l8 12-8 12"/>
@@ -45,41 +45,39 @@
     <rect x="690" y="190" width="34" height="34" rx="9" fill="#176bc0"/>
     <path d="M699 207l6 6 11-15" fill="none" stroke="#f5f5f6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 
-    <text x="258" y="266" fill="#a7a5a9" font-size="17" font-weight="650">CONNECTED</text>
-    <circle cx="275" cy="306" r="13" fill="#1677e8"/>
-    <path d="M269 306l4 4 8-10" fill="none" stroke="#101012" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="306" y="314" fill="#f4f4f5" font-size="22">BrandNewDay-5G</text>
-    <path d="M652 307a25 25 0 0 1 36 0M658 313a17 17 0 0 1 24 0M665 319a8 8 0 0 1 10 0" fill="none" stroke="#9e9ca0" stroke-width="3" stroke-linecap="round"/>
-    <rect x="622" y="301" width="11" height="12" rx="2" fill="#9e9ca0"/>
-    <path d="M624 301v-4a3.5 3.5 0 0 1 7 0v4" fill="none" stroke="#9e9ca0" stroke-width="2"/>
+    <text x="258" y="275" fill="#f4f4f5" font-size="22">BrandNewDay-5G</text>
+    <circle cx="427" cy="267" r="11" fill="#1677e8"/>
+    <path d="M422 267l3 3 7-8" fill="none" stroke="#101012" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M652 268a25 25 0 0 1 36 0M658 274a17 17 0 0 1 24 0M665 280a8 8 0 0 1 10 0" fill="none" stroke="#9e9ca0" stroke-width="3" stroke-linecap="round"/>
+    <rect x="622" y="262" width="11" height="12" rx="2" fill="#9e9ca0"/>
+    <path d="M624 262v-4a3.5 3.5 0 0 1 7 0v4" fill="none" stroke="#9e9ca0" stroke-width="2"/>
 
-    <text x="258" y="371" fill="#a7a5a9" font-size="17" font-weight="650">KNOWN NETWORKS</text>
-    <text x="306" y="419" fill="#f4f4f5" font-size="22">BrandNewDay</text>
-    <path d="M652 412a25 25 0 0 1 36 0M658 418a17 17 0 0 1 24 0M665 424a8 8 0 0 1 10 0" fill="none" stroke="#9e9ca0" stroke-width="3" stroke-linecap="round"/>
-    <rect x="622" y="406" width="11" height="12" rx="2" fill="#9e9ca0"/>
-    <path d="M624 406v-4a3.5 3.5 0 0 1 7 0v4" fill="none" stroke="#9e9ca0" stroke-width="2"/>
+    <text x="258" y="327" fill="#f4f4f5" font-size="22">BrandNewDay</text>
+    <path d="M652 320a25 25 0 0 1 36 0M658 326a17 17 0 0 1 24 0M665 332a8 8 0 0 1 10 0" fill="none" stroke="#9e9ca0" stroke-width="3" stroke-linecap="round"/>
+    <rect x="622" y="314" width="11" height="12" rx="2" fill="#9e9ca0"/>
+    <path d="M624 314v-4a3.5 3.5 0 0 1 7 0v4" fill="none" stroke="#9e9ca0" stroke-width="2"/>
 
-    <line x1="220" y1="459" x2="740" y2="459" stroke="#4f4d51"/>
+    <line x1="220" y1="359" x2="740" y2="359" stroke="#4f4d51"/>
 
     <g fill="none" stroke="#f0f0f2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="270" cy="505" r="12"/><circle cx="270" cy="505" r="5"/>
-      <path d="M270 489v5M270 516v5M254 505h5M281 505h5M259 494l4 4M277 512l4 4M281 494l-4 4M263 512l-4 4"/>
+      <circle cx="270" cy="405" r="12"/><circle cx="270" cy="405" r="5"/>
+      <path d="M270 389v5M270 416v5M254 405h5M281 405h5M259 394l4 4M277 412l4 4M281 394l-4 4M263 412l-4 4"/>
     </g>
-    <text x="306" y="514" fill="#f4f4f5" font-size="22">Network Settings…</text>
+    <text x="306" y="414" fill="#f4f4f5" font-size="22">Network Settings…</text>
 
     <g fill="none" stroke="#f0f0f2" stroke-width="2.4" stroke-linecap="round">
-      <path d="M270 550v14"/><path d="M260 554a13 13 0 1 0 20 0"/>
+      <path d="M270 450v14"/><path d="M260 454a13 13 0 1 0 20 0"/>
     </g>
-    <text x="306" y="570" fill="#f4f4f5" font-size="22">Launch at Login</text>
-    <rect x="646" y="543" width="70" height="38" rx="19" fill="#176fd5"/>
-    <circle cx="696" cy="562" r="17" fill="#d8d8da"/>
+    <text x="306" y="470" fill="#f4f4f5" font-size="22">Launch at Login</text>
+    <rect x="646" y="443" width="70" height="38" rx="19" fill="#176fd5"/>
+    <circle cx="696" cy="462" r="17" fill="#d8d8da"/>
 
-    <circle cx="270" cy="618" r="12" fill="none" stroke="#f0f0f2" stroke-width="2.2"/>
-    <text x="267" y="625" fill="#f0f0f2" font-size="19" font-weight="700">i</text>
-    <text x="306" y="626" fill="#f4f4f5" font-size="22">About McNetworkMenu</text>
+    <circle cx="270" cy="518" r="12" fill="none" stroke="#f0f0f2" stroke-width="2.2"/>
+    <text x="267" y="525" fill="#f0f0f2" font-size="19" font-weight="700">i</text>
+    <text x="306" y="526" fill="#f4f4f5" font-size="22">About McNetworkMenu</text>
 
-    <circle cx="270" cy="666" r="12" fill="none" stroke="#f0f0f2" stroke-width="2.2"/>
-    <path d="M265 661l10 10M275 661l-10 10" stroke="#f0f0f2" stroke-width="2.2" stroke-linecap="round"/>
-    <text x="306" y="674" fill="#f4f4f5" font-size="22">Quit McNetworkMenu</text>
+    <circle cx="270" cy="566" r="12" fill="none" stroke="#f0f0f2" stroke-width="2.2"/>
+    <path d="M265 561l10 10M275 561l-10 10" stroke="#f0f0f2" stroke-width="2.2" stroke-linecap="round"/>
+    <text x="306" y="574" fill="#f4f4f5" font-size="22">Quit McNetworkMenu</text>
   </g>
 </svg>
