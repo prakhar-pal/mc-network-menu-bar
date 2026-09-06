@@ -52,7 +52,7 @@ Success means a user can:
 - ServiceManagement (`SMAppService.mainApp`) for Launch at Login.
 - AppKit (`NSWorkspace`) for opening macOS settings and terminating the application.
 - Swift Package Manager for dependency-free CLI compilation and test discovery.
-- XCTest for automated tests.
+- Swift Testing for automated tests with the installed Command Line Tools.
 - Make as the public developer workflow, wrapping Swift Package Manager, app-bundle assembly, and code signing.
 - No third-party runtime dependencies.
 
@@ -62,7 +62,7 @@ The root Makefile is the supported interface. Swift Package Manager and bundle-a
 
 ```sh
 make build    # Compile with SwiftPM and assemble a Debug .app bundle.
-make test     # Run the complete mock-driven XCTest suite with swift test.
+make test     # Run the complete mock-driven Swift Testing suite with swift test.
 make clean    # Clean SwiftPM and assembled app outputs.
 make run      # Build and launch the Debug .app bundle.
 make release  # Compile, assemble, and sign an optimized Release .app bundle.
@@ -82,7 +82,7 @@ Sources/
     Services/                         Public-API framework adapters
     ViewModels/                       Main-actor panel state and actions
 Tests/
-  McNetworkMenuCoreTests/             Mock-driven XCTest suite
+  McNetworkMenuCoreTests/             Mock-driven Swift Testing suite
     Models/                           Pure state and sorting tests
     ViewModels/                       State-transition tests with fakes
     Services/                         Adapter-level mapping tests
@@ -215,7 +215,7 @@ protocol NetworkPathMonitoring: Sendable {
 
 ## Testing Strategy
 
-Automated XCTest coverage runs through `swift test` and verifies outcomes using mock/fake framework boundaries rather than live network hardware or framework call sequences:
+Automated Swift Testing coverage runs through `swift test` and verifies outcomes using mock/fake framework boundaries rather than live network hardware or framework call sequences:
 
 - Default-route selection and Wi-Fi/Ethernet/offline symbol mapping.
 - Simultaneous Ethernet and Wi-Fi behavior.

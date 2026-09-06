@@ -6,7 +6,7 @@
 
 **Architecture:** A SwiftUI executable target provides `MenuBarExtra(.window)` while an importable `McNetworkMenuCore` target owns domain state, Apple-framework adapters, and the main-actor view model. Make wraps SwiftPM, assembles the standard `.app` directory, copies bundle metadata, signs it, and verifies the result without an Xcode project.
 
-**Tech Stack:** Swift 5.9 package manifest, SwiftUI, Network, CoreWLAN, CoreLocation, ServiceManagement, AppKit, XCTest, Swift 6.2 CLI toolchain, GNU Make, macOS 14 deployment target.
+**Tech Stack:** Swift 5.9 package manifest, SwiftUI, Network, CoreWLAN, CoreLocation, ServiceManagement, AppKit, Swift Testing, Swift 6.2 CLI toolchain, GNU Make, macOS 14 deployment target.
 
 **Spec:** `docs/superpowers/specs/2026-09-06-mcnetworkmenu-design.md`
 
@@ -385,7 +385,7 @@ Path fake owns an AsyncStream continuation. Wi-Fi fake supports queued scan cont
 
 - [ ] **Step 2: Write failing state tests**
 
-Using only fakes, test Wi-Fi route plus connected SSID; just-in-time permission then scan; denied permission/no scan; stale scan rejection; password clearing after failure; Ethernet primary with Wi-Fi data retained; power, disconnect, login toggle, settings, About, and Quit effects.
+Using only fakes and Swift Testing, test Wi-Fi route plus connected SSID; just-in-time permission then scan; denied permission/no scan; stale scan rejection; password clearing after failure; Ethernet primary with Wi-Fi data retained; power, disconnect, login toggle, settings, About, and Quit effects.
 
 - [ ] **Step 3: Verify RED**
 
