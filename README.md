@@ -56,3 +56,7 @@ McNetworkMenu requests Location access only when a named nearby-network scan is 
 The app primarily uses public Apple APIs: Network, CoreWLAN, CoreLocation, ServiceManagement, AppKit, and SwiftUI. To open Network Settings directly on macOS 14 or later, it also uses the undocumented `x-apple.systempreferences:com.apple.Network-Settings.extension` destination. This is a narrowly scoped compatibility dependency that may change in a future macOS release. The app does not reorder network services, change the default route, edit remembered-network profiles, or bypass administrator approval.
 
 Automated validation currently uses mock path, Wi-Fi, permission, login-item, and application-action data. Real-hardware checks are intentionally deferred and listed in [docs/smoke-tests.md](docs/smoke-tests.md).
+
+## License
+
+Copyright (C) 2026 Prakhar Pal. McNetworkMenu is licensed under the GNU General Public License, version 3 or (at your option) any later version. See [COPYING](COPYING) for the full license text.

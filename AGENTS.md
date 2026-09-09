@@ -33,6 +33,10 @@ History follows Conventional Commit prefixes such as `feat:`, `fix:`, and `docs:
 
 Prefer public Apple APIs. A private macOS interface may be used only when a public API cannot meet a user-approved requirement; keep it narrowly scoped, document its compatibility risk, and cover it with mock-only tests. Never use private interfaces to bypass macOS permission prompts or authorization, log or persist Wi-Fi credentials, or manage remembered networks outside CoreWLAN behavior. Preserve the project’s GitHub self-publishing and ad-hoc/self-signed distribution model.
 
+## Licensing
+
+McNetworkMenu is GPL-3.0-or-later. The complete license text is in `COPYING`; preserve it and its README reference when adding or updating project documentation.
+
 ## Agent-Specific Instructions
 
 Do not create or use Git worktrees. Work only in the current checkout and preserve unrelated user changes.
