@@ -9,7 +9,9 @@ APP_BUNDLE := $(CURDIR)/.build/apps/$(CONFIGURATION)/$(APP_NAME).app
 INSTALL_DIR ?= $(HOME)/Applications
 INSTALL_BUNDLE := $(INSTALL_DIR)/$(APP_NAME).app
 APP_CONTENTS := $(APP_BUNDLE)/Contents
+APP_RESOURCES := $(APP_CONTENTS)/Resources
 APP_EXECUTABLE := $(APP_CONTENTS)/MacOS/$(APP_NAME)
+APP_ICON := $(CURDIR)/Support/AppIcon.icns
 SWIFT_CACHE := $(CURDIR)/.build/cache
 SWIFT_CONFIG := $(CURDIR)/.build/config
 SWIFT_SECURITY := $(CURDIR)/.build/security
@@ -48,9 +50,10 @@ install: release
 bundle:
 	$(SWIFT) build $(SWIFT_FLAGS) --configuration $(CONFIGURATION)
 	/bin/rm -rf "$(APP_BUNDLE)"
-	/bin/mkdir -p "$(APP_CONTENTS)/MacOS"
+	/bin/mkdir -p "$(APP_CONTENTS)/MacOS" "$(APP_RESOURCES)"
 	/usr/bin/install -m 755 "$(SWIFT_EXECUTABLE)" "$(APP_EXECUTABLE)"
 	/usr/bin/install -m 644 "$(CURDIR)/Support/Info.plist" "$(APP_CONTENTS)/Info.plist"
+	/usr/bin/install -m 644 "$(APP_ICON)" "$(APP_RESOURCES)/AppIcon.icns"
 	/usr/bin/codesign --force --sign "$(SIGNING_IDENTITY)" "$(APP_BUNDLE)"
 	$(MAKE) verify CONFIGURATION=$(CONFIGURATION)
 
