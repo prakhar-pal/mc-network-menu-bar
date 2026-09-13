@@ -8,6 +8,8 @@
     <string>McNetworkMenu</string>
     <key>CFBundleIdentifier</key>
     <string>com.prakharpal.McNetworkMenu</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>CFBundleName</key>
     <string>McNetworkMenu</string>
     <key>CFBundlePackageType</key>

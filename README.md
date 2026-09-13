@@ -25,6 +25,7 @@ The checked-in Makefile currently defaults to the Command Line Tools macOS 15.4 
 make build       # Debug bundle
 make test        # Hardware-free unit tests using mock data
 make release     # Release bundle
+make install     # Release bundle installed in ~/Applications
 make check       # Tests followed by verified Release bundle
 make run         # Build and launch the Debug app
 make clean       # Remove generated .build output
@@ -45,9 +46,11 @@ This project is intended for self-publishing on GitHub rather than the Mac App S
 
 ## Install and Launch at Login
 
-Copy `McNetworkMenu.app` to `/Applications` before enabling Launch at Login. Running from a build folder and later moving the app can leave macOS pointing at the old registration location.
+Run `make install` to place the Release bundle in `~/Applications/McNetworkMenu.app`, then open it from Finder. The app starts as a menu-bar-only application, so it has no Dock icon. Use **Quit McNetworkMenu** in its panel to stop it.
 
-McNetworkMenu is an agent app (`LSUIElement`) and does not show a Dock icon. Use **Quit McNetworkMenu** in its panel to stop it.
+Install the app before enabling Launch at Login. Running from a build folder and later moving the app can leave macOS pointing at the old registration location.
+
+Run `make install` again to replace the installed app with a newly built Release bundle.
 
 ## Privacy and platform behavior
 
