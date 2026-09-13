@@ -6,6 +6,8 @@ SDKROOT ?= /Library/Developer/CommandLineTools/SDKs/MacOSX15.4.sdk
 
 APP_NAME := McNetworkMenu
 APP_BUNDLE := $(CURDIR)/.build/apps/$(CONFIGURATION)/$(APP_NAME).app
+INSTALL_DIR ?= $(HOME)/Applications
+INSTALL_BUNDLE := $(INSTALL_DIR)/$(APP_NAME).app
 APP_CONTENTS := $(APP_BUNDLE)/Contents
 APP_EXECUTABLE := $(APP_CONTENTS)/MacOS/$(APP_NAME)
 SWIFT_CACHE := $(CURDIR)/.build/cache
@@ -21,7 +23,7 @@ SWIFT_TEST_FLAGS := $(SWIFT_FLAGS) -Xswiftc -F -Xswiftc $(DEVELOPER_FRAMEWORKS) 
 SWIFT_BIN_DIR = $(shell $(SWIFT) build $(SWIFT_FLAGS) --configuration $(CONFIGURATION) --show-bin-path)
 SWIFT_EXECUTABLE := $(SWIFT_BIN_DIR)/$(APP_NAME)
 
-.PHONY: build test clean run release bundle verify check
+.PHONY: build test clean run release bundle verify check install
 
 build:
 	$(MAKE) bundle CONFIGURATION=debug
@@ -37,6 +39,11 @@ run: build
 
 release:
 	$(MAKE) bundle CONFIGURATION=release
+
+install: release
+	/bin/mkdir -p "$(INSTALL_DIR)"
+	/bin/rm -rf "$(INSTALL_BUNDLE)"
+	/usr/bin/ditto "$(CURDIR)/.build/apps/release/$(APP_NAME).app" "$(INSTALL_BUNDLE)"
 
 bundle:
 	$(SWIFT) build $(SWIFT_FLAGS) --configuration $(CONFIGURATION)
